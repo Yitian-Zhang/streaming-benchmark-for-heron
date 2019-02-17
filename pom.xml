@@ -6,7 +6,150 @@
 
     <groupId>streaming-benchmark-for-heron</groupId>
     <artifactId>streaming-benchmark-for-heron</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <modules>
+        <module>streaming-benchmark-common</module>
+        <module>heron-benchmarks</module>
+        <module>streaming-benchmark-common</module>
+        <module>heron-benchmarks</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spark.version>1.6.2</spark.version>
+        <kafka.version>0.8.2.1</kafka.version>
+        <!--<kafka.version>2.0.0</kafka.version>-->
+        <flink.version>1.1.3</flink.version>
+        <!--<storm.version>0.9.7</storm.version>-->
+        <storm.version>1.0.2</storm.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.10.4</scala.version>
+        <json.version>20140107</json.version>
+        <jedis.version>2.4.2</jedis.version>
+        <sedis.version>1.2.2</sedis.version>
+        <slf4j.version>1.7.7</slf4j.version>
+        <commons-cli.version>1.3.1</commons-cli.version>
+        <snakeyaml.version>1.11</snakeyaml.version>
+        <apex.version>3.4.0</apex.version>
+        <heron.version>0.17.5</heron.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--<dependency>-->
+            <!--<groupId>com.twitter.heron</groupId>-->
+            <!--<artifactId>heron-api</artifactId>-->
+            <!--<version>${heron.version}</version>-->
+            <!--</dependency>-->
+            <!-- https://mvnrepository.com/artifact/com.twitter.heron/heron-kafka -->
+            <!--<dependency>-->
+            <!--<groupId>com.twitter.heron</groupId>-->
+            <!--<artifactId>heron-kafka</artifactId>-->
+            <!--<version>0.15.0</version>-->
+            <!--</dependency>-->
+            <!-- https://mvnrepository.com/artifact/org.apache.storm/storm-kafka -->
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-kafka</artifactId>
+                <version>${storm.version}</version>
+                <!--<scope>provided</scope>-->
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.twitter.heron/heron-storm -->
+            <dependency>
+                <groupId>com.twitter.heron</groupId>
+                <artifactId>heron-storm</artifactId>
+                <version>0.17.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+                <!--<scope>test</scope>-->
+            </dependency>
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>${commons-cli.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_${scala.binary.version}</artifactId>
+                <version>${kafka.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <!--<groupId>com.yahoo.stream</groupId>-->
+                <!--<artifactId>streaming-benchmark-common</artifactId>-->
+                <groupId>yahoo-benchmark-for-heron</groupId>
+                <artifactId>streaming-benchmark-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.10</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
