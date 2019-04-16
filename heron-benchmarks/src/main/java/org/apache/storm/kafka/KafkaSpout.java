@@ -19,6 +19,9 @@ import org.apache.storm.topology.base.BaseRichSpout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Copy from original KafkaSpout.
+ */
 public class KafkaSpout extends BaseRichSpout {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaSpout.class);
     private SpoutConfig _spoutConfig;

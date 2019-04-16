@@ -31,7 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * This is a basic example of a Storm topology.
+ * This class is the topology for Heron.
+ * It uses KafkaSpout(Storm) to get data from Kafka. And emit data streams into Heron.
  */
 public class AdvertisingTopology {
 
@@ -39,9 +40,9 @@ public class AdvertisingTopology {
         //  test-topo -conf $CONF_FILE
         TopologyBuilder builder = new TopologyBuilder();
 
+        // Get configuration from localConf.yaml. (in resources)
         String configPath = "localConf.yaml";
         Map commonConfig = Utils.findAndReadConfigFile(configPath, true);
-
         String zkServerHosts = joinHosts((List<String>) commonConfig.get("zookeeper.servers"),
                 Integer.toString((Integer) commonConfig.get("zookeeper.port")));
         String redisServerHost = (String) commonConfig.get("redis.host");
@@ -54,23 +55,25 @@ public class AdvertisingTopology {
         int parallel = 3;
         System.out.println("[zkServerHosts]: " + zkServerHosts + ". " +
                 "[redisServerHost]: " + redisServerHost + ". " +
-                "[kafkaTopic]: "+kafkaTopic + ". " +
+                "[kafkaTopic]: " + kafkaTopic + ". " +
                 "[kafkaPartitions]: " + kafkaPartitions + ". " +
                 "[workers]: " + workers + ". " +
                 "[ackers]: " + ackers + ". " +
                 "[cores]: " + cores + ". " +
                 "[parallel]: " + parallel);
-
+        // Output example:
 //        [zkServerHosts]: 218.195.228.35:2181. [redisServerHost]: 218.195.228.35. [kafkaTopic]: ad-events. [kafkaPartitions]: 1. [workers]: 3. [ackers]: 2. [cores]: 4. [parallel]: 1
 //        arg[0] is: AdvertisingTopology
 
+        // Create the KafkaSpout
         ZkHosts hosts = new ZkHosts(zkServerHosts);
-
         SpoutConfig spoutConfig = new SpoutConfig(hosts, kafkaTopic, "/" + kafkaTopic, UUID.randomUUID().toString());
         spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
         KafkaSpout kafkaSpout = new KafkaSpout(spoutConfig);
 
-        builder.setSpout("ads", kafkaSpout, kafkaPartitions); // the parallelism of the kafkaspout equal to the kafkaPartitions value
+        // Set TopologyBuilder which locate in Storm package.
+        // The parallelism of the kafkaspout equal to the kafkaPartitions value
+        builder.setSpout("ads", kafkaSpout, kafkaPartitions);
         builder.setBolt("event_deserializer", new DeserializeBolt(), parallel).shuffleGrouping("ads");
         builder.setBolt("event_filter", new EventFilterBolt(), parallel).shuffleGrouping("event_deserializer");
         builder.setBolt("event_projection", new EventProjectionBolt(), parallel).shuffleGrouping("event_filter");
@@ -79,7 +82,8 @@ public class AdvertisingTopology {
                 .fieldsGrouping("redis_join", new Fields("campaign_id"));
 
         Config conf = new Config();
-        // 20181104 - solved the problem of NULLPOINTEREXCEPTION in kafkaSpout --------------
+        // There is important configuration. If don't set, this topology can not running in Heron.
+        // (20181104 - solved the problem of NULLPOINTEREXCEPTION in kafkaSpout)
         List<String> zkHosts = new ArrayList<>();
         zkHosts.add("218.195.228.35");
         Integer zkPort = 2181;
@@ -89,9 +93,8 @@ public class AdvertisingTopology {
         conf.put("storm.zookeeper.connection.timeout", 15000);
         conf.put("storm.zookeeper.retry.times", 5);
         conf.put("storm.zookeeper.retry.interval", 1000);
-        // ----------------------------------------------------------------------------------
 
-        // heron submit xxx/xxx/xxx xxx.jar xxx.AdvertisingTopology AdvertisingTopology arg1 arg2 --verbose
+        // submit topology command in Heron: heron submit xxx/xxx/xxx xxx.jar xxx.AdvertisingTopology AdvertisingTopology arg1 arg2 --verbose
         if (args != null && args.length > 0) {
             System.out.println("arg[0] is: " + args[0]);
             conf.setNumWorkers(workers);
@@ -121,6 +124,10 @@ public class AdvertisingTopology {
         return joined;
     }
 
+    /**
+     * DeserializeBolt
+     * take charge to deserialize JSON string data into tuple for processing in Heron
+     */
     public static class DeserializeBolt extends BaseRichBolt {
         OutputCollector _collector;
 
@@ -150,6 +157,10 @@ public class AdvertisingTopology {
 
     }
 
+    /**
+     * EventFilterBolt
+     * According to the event type (view) to filter events (data)
+     */
     public static class EventFilterBolt extends BaseRichBolt {
         OutputCollector _collector;
 
@@ -172,6 +183,10 @@ public class AdvertisingTopology {
         }
     }
 
+    /**
+     * EventProjectionBolt
+     * Delete some elements in the event tuple, only left <ad_id, event_time>
+     */
     public static class EventProjectionBolt extends BaseRichBolt {
         OutputCollector _collector;
 
@@ -193,6 +208,10 @@ public class AdvertisingTopology {
         }
     }
 
+    /**
+     * RedisJoinBolt
+     * Join campaign_id which were stored in Redis at the beginning
+     */
     public static class RedisJoinBolt extends BaseRichBolt {
         transient RedisAdCampaignCache redisAdCampaignCache;
         private OutputCollector _collector;
@@ -228,6 +247,10 @@ public class AdvertisingTopology {
         }
     }
 
+    /**
+     * CampaignProcessor
+     * According to time_window and campaign_window to store the statistics data back into Redis
+     */
     public static class CampaignProcessor extends BaseRichBolt {
 
         private static final Logger LOG = Logger.getLogger(CampaignProcessor.class);

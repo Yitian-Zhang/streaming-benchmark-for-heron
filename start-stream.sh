@@ -1,6 +1,5 @@
 #!/bin/bash
-# Copyright 2015, Yahoo Inc.
-# Licensed under the terms of the Apache License 2.0. Please see LICENSE file in the project root for terms.
+
 set -o pipefail
 set -o errtrace
 set -o nounset
