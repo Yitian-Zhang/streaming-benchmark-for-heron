@@ -6,14 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="heron-benchmarks" />
         <module name="streaming-benchmark-common" />
+        <module name="heron-benchmarks" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="heron-benchmarks" target="1.8" />
-      <module name="streaming-benchmark-common" target="1.7" />
-      <module name="streaming-benchmark-for-heron" target="1.7" />
-    </bytecodeTargetLevel>
   </component>
 </project>

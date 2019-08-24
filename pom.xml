@@ -12,8 +12,8 @@
     <modules>
         <module>streaming-benchmark-common</module>
         <module>heron-benchmarks</module>
-        <module>streaming-benchmark-common</module>
-        <module>heron-benchmarks</module>
+<!--        <module>streaming-benchmark-common</module>-->
+<!--        <module>heron-benchmarks</module>-->
     </modules>
 
     <properties>
