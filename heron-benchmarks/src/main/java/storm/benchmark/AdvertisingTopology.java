@@ -61,9 +61,11 @@ public class AdvertisingTopology {
                 "[ackers]: " + ackers + ". " +
                 "[cores]: " + cores + ". " +
                 "[parallel]: " + parallel);
-        // Output example:
-//        [zkServerHosts]: 218.195.228.35:2181. [redisServerHost]: 218.195.228.35. [kafkaTopic]: ad-events. [kafkaPartitions]: 1. [workers]: 3. [ackers]: 2. [cores]: 4. [parallel]: 1
-//        arg[0] is: AdvertisingTopology
+        /*
+        Output example:
+        [zkServerHosts]: 218.195.228.35:2181. [redisServerHost]: 218.195.228.35. [kafkaTopic]: ad-events. [kafkaPartitions]: 1. [workers]: 3. [ackers]: 2. [cores]: 4. [parallel]: 1
+        arg[0] is: AdvertisingTopology
+         */
 
         // Create the KafkaSpout
         ZkHosts hosts = new ZkHosts(zkServerHosts);
@@ -82,8 +84,10 @@ public class AdvertisingTopology {
                 .fieldsGrouping("redis_join", new Fields("campaign_id"));
 
         Config conf = new Config();
-        // There is important configuration. If don't set, this topology can not running in Heron.
-        // (20181104 - solved the problem of NULLPOINTEREXCEPTION in kafkaSpout)
+        /*
+        There is important configuration. If don't set, this topology can not running in Heron.
+        (20181104 - solved the problem of NULLPOINTEREXCEPTION in kafkaSpout)
+         */
         List<String> zkHosts = new ArrayList<>();
         zkHosts.add("218.195.228.35");
         Integer zkPort = 2181;
@@ -94,20 +98,27 @@ public class AdvertisingTopology {
         conf.put("storm.zookeeper.retry.times", 5);
         conf.put("storm.zookeeper.retry.interval", 1000);
 
-        // submit topology command in Heron: heron submit xxx/xxx/xxx xxx.jar xxx.AdvertisingTopology AdvertisingTopology arg1 arg2 --verbose
+        /*
+        submit topology command in Heron:
+        heron submit xxx/xxx/xxx xxx.jar xxx.AdvertisingTopology AdvertisingTopology arg1 arg2 --verbose
+         */
         if (args != null && args.length > 0) {
             System.out.println("arg[0] is: " + args[0]);
             conf.setNumWorkers(workers);
             conf.setNumAckers(ackers);
             StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-        } else {
-//            LocalCluster cluster = new LocalCluster();
-//            cluster.submitTopology("test", conf, builder.createTopology());
-//            backtype.storm.utils.Utils.sleep(10000);
-//            cluster.killTopology("test");
-//            cluster.shutdown();
+        }
+        /*
+        Heron don't need this part:
+        else {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("test", conf, builder.createTopology());
+            backtype.storm.utils.Utils.sleep(10000);
+            cluster.killTopology("test");
+            cluster.shutdown();
             System.out.println("There is no arguments!!!");
         }
+         */
     }
 
     private static String joinHosts(List<String> hosts, String port) {
