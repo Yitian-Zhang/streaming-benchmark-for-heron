@@ -20,7 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Copy from original KafkaSpout.
+ * This KafkaSpout is copied from the original KafkaSpout in org.apache.storm.kafka.
+ * It is used in AdvertisingTopology.
+ *
+ * @author yitian
  */
 public class KafkaSpout extends BaseRichSpout {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaSpout.class);

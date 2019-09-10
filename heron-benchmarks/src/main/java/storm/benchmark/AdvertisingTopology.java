@@ -33,6 +33,8 @@ import java.util.UUID;
 /**
  * This class is the topology for Heron.
  * It uses KafkaSpout(Storm) to get data from Kafka. And emit data streams into Heron.
+ *
+ * @author yitian
  */
 public class AdvertisingTopology {
 

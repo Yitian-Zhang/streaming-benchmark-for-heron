@@ -1,4 +1,5 @@
 import benchmark.common.Utils;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,9 @@ public class ConfTest {
         return joined;
     }
 
-    public static void main(String[] args) throws Exception {
-        String configPath = "./conf/localConf.yaml";
+    @Test
+    public void test() {
+        String configPath = "localConf.yaml";
         Map commonConfig = Utils.findAndReadConfigFile(configPath, true);
 
         String zkServerHosts = joinHosts((List<String>) commonConfig.get("zookeeper.servers"),

@@ -1,17 +1,17 @@
 # AdvertisingTopology using this config file
 kafka.brokers:
-    - "kafka" #192.168.209.137
+    - "kafka"               # host config: kafka 192.168.209.137
 
 zookeeper.servers:
-    - "kafka" #192.168.209.137
+    - "kafka"               # host config: kafka 192.168.209.137
 
-kafka.port: 9092
-zookeeper.port: 2181
-redis.host: "kafka" # 192.168.209.137
-kafka.topic: "ad-events"
-kafka.partitions: 1 # the number of partitions of kafka topic, default is 1
+kafka.port: 9092            # kafka port
+zookeeper.port: 2181        # zookeeper port
+redis.host: "kafka"         # host config: kafka 192.168.209.137
+kafka.topic: "ad-events"    # kafka topic
+kafka.partitions: 1         # the number of partitions of kafka topic, default is 1
 process.hosts: 1
 process.cores: 4
-storm.workers: 6 # stmgr number: last set (3)
-storm.ackers: 2
+storm.workers: 6            # stmgr number: last set (3)
+storm.ackers: 2             # if this value is not null/0, the acknowledgement is open in Heron
 #spark.batchtime: 2000
