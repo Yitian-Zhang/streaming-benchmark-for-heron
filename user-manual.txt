@@ -1,0 +1,26 @@
+**********************************************************
+                         项目使用说明
+                         2018/10/23
+                         Yitian Zhang
+**********************************************************
+
+启动Yahoo-benchmark-for-heron的步骤：
+1.	Kafka节点启动zookeeper
+2.	Kafka节点启动kafka-server和kafka-consumer用于观测发送的数据
+3.	Kafka节点启动redis
+4.	提交benchmark拓扑
+5.	Kafka节点启动: start-stream.sh START_READIS
+6.	Kafka节点启动数据源: start-stream.sh START_LOAD
+7.	Kafka节点停止数据源: start-stream.sh STOP_LOAD
+8.	Kill 拓扑
+9.	测试后的latency数据所在目录：{当前目录}/data/
+
+
+TODO：暂时无法使用类似下面这种命令启动：
+$STORM_DIR/bin/heron"
+    jar
+    ./heron-benchmarks/target/storm-benchmarks-0.1.0.jar
+    storm.benchmark.AdvertisingTopology
+    test-topo
+    -conf
+    $CONF_FILE

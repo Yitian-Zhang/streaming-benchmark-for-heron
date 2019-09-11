@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# -----------------------------------------------------
+# This file is responsible for starting kafka producer
+# Modified from stream-bench.sh for Heron
+#
+# Author: Yitian
+# -----------------------------------------------------
+
 set -o pipefail
 set -o errtrace
 set -o nounset
@@ -11,21 +18,7 @@ MVN=${MVN:-mvn}
 GIT=${GIT:-git}
 MAKE=${MAKE:-make}
 
-# defined kafka, redis, scala, heron version
-#KAFKA_VERSION=${KAFKA_VERSION:-"0.8.2.1"}
-#REDIS_VERSION=${REDIS_VERSION:-"3.0.5"}
-#SCALA_BIN_VERSION=${SCALA_BIN_VERSION:-"2.10"}
-#SCALA_SUB_VERSION=${SCALA_SUB_VERSION:-"4"}
-# STORM_VERSION=${STORM_VERSION:-"0.9.7"}
-
-# defined redis, kafka, heron DIR filename
-# STORM_DIR="apache-storm-$STORM_VERSION"
-#REDIS_DIR="redis-$REDIS_VERSION"
-#KAFKA_DIR="kafka_$SCALA_BIN_VERSION-$KAFKA_VERSION"
-
-#Get one of the closet apache mirrors
-#APACHE_MIRROR=$(curl 'https://www.apache.org/dyn/closer.cgi' |   grep -o '<strong>[^<]*</strong>' |   sed 's/<[^>]*>//g' |   head -1)
-
+# defined some variable
 ZK_HOST="218.195.228.35" #192.168.209.137
 ZK_PORT="2181"
 ZK_CONNECTIONS="$ZK_HOST:$ZK_PORT"
@@ -141,18 +134,6 @@ run() {
     cd data
     $LEIN run -n --configPath ../conf/benchmarkConf.yaml
     cd ..
-#  elif [ "STOP_REDIS" = "$OPERATION" ];
-#  then
-#    stop_if_needed redis-server Redis
-#    rm -f dump.rdb
-#  elif [ "START_KAFKA" = "$OPERATION" ];
-#  then
-#    start_if_needed kafka\.Kafka Kafka 10 "$KAFKA_DIR/bin/kafka-server-start.sh" "$KAFKA_DIR/config/server.properties"
-#    create_kafka_topic
-#  elif [ "STOP_KAFKA" = "$OPERATION" ];
-#  then
-#    stop_if_needed kafka\.Kafka Kafka
-#    rm -rf /tmp/kafka-logs/
   elif [ "START_LOAD" = "$OPERATION" ];
   then
     cd data
@@ -164,34 +145,6 @@ run() {
     cd data
     $LEIN run -g --configPath ../$CONF_FILE || true
     cd ..
-
-  # START_STORM_TOPOLOGY ----------------------------
-#  elif [ "START_HERON_TOPOLOGY" = "$OPERATION" ];
-#  then
-#    "$STORM_DIR/bin/heron" jar ./heron-benchmarks/target/storm-benchmarks-0.1.0.jar storm.benchmark.AdvertisingTopology test-topo -conf $CONF_FILE
-#    sleep 15
-#  elif [ "STOP_HERON_TOPOLOGY" = "$OPERATION" ];
-#  then
-#    "$STORM_DIR/bin/heron" kill -w 0 test-topo || true
-#    sleep 10
-
-  # HERON_TEST commands -------------------------------------------
-#  elif [ "HERON_TEST" = "$OPERATION" ];
-#  then
-#    run "START_ZK" # zk可以手动启动
-#    run "START_REDIS" # redis可以手动启动
-#    run "START_KAFKA" # kafka可以手动启动
-#    run "START_HERON" # heron可以手动启动
-#    run "START_HERON_TOPOLOGY" # 提交HeronTopology可以手动
-#    run "START_LOAD" # 这个不知道怎么手动启动, 使用命令启动
-#    sleep $TEST_TIME
-#    run "STOP_LOAD"
-#    run "STOP_HERON_TOPOLOGY"
-#    run "STOP_HERON"
-#    run "STOP_KAFKA"
-#    run "STOP_REDIS"
-#    run "STOP_ZK"
-  # HERON_TEST commands -------------------------------------------
   elif [ "HERON_TEST" = "$OPERATION" ];
   then
     run "START_REDIS"
@@ -205,25 +158,10 @@ run() {
       echo
     fi
     echo "Supported Operations:"
-#    echo "SETUP: download and setup dependencies for running a single node test"
-#    echo "START_ZK: run a single node ZooKeeper instance on local host in the background"
-#    echo "STOP_ZK: kill the ZooKeeper instance"
+    echo
     echo "START_REDIS: run a redis instance in the background"
-#    echo "STOP_REDIS: kill the redis instance"
-#    echo "START_KAFKA: run kafka in the background"
-#    echo "STOP_KAFKA: kill kafka"
     echo "START_LOAD: run kafka load generation"
     echo "STOP_LOAD: kill kafka load generation"
-#    echo "START_STORM: run storm daemons in the background"
-#    echo "STOP_STORM: kill the storm daemons"
-#    echo
-#    echo "START_STORM_TOPOLOGY: run the storm test topology"
-#    echo "STOP_STORM_TOPOLOGY: kill the storm test topology"
-#    echo
-#    echo "STORM_TEST: run storm test (assumes SETUP is done)"
-    # for heron ----------------------------------
-#    echo "HERON_TEST: run Heron test (assumes SETUP is done)"
-#    echo "STOP_ALL: stop everything"
     echo
     echo "HELP: print out this message"
     echo
